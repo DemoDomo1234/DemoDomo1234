@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>detail</title>
+</head>
+<body>
+  <video controls> 
+    <source src="{{blog.film.url}}" >
+     </video>
+<h3>{{blog.titel}}</h3>
+<p>{{blog.body}}</p>
+{{blog.author}}
+{{blog.date}}
+
+{% if user in blog.likes.all %}
+    <a href="{% url 'blog:unlike1' blog.id %}">👍</a>
+{% else %}
+   <a href="{% url 'blog:like1' blog.id %}">👍</a>
+{% endif %}
+
+{% if user in blog.unlikes.all %}
+    <a href="{% url 'blog:unlike2' blog.id %}">👎</a>
+{% else %}
+   <a href="{% url 'blog:like2' blog.id %}">👎</a>
+{% endif %}
+
+{% if user in blog.saved.all %}
+    <a href="{% url 'blog:unsaved' blog.id %}">save</a>
+{% else %}
+   <a href="{% url 'blog:saved' blog.id %}">unsave</a>
+{% endif %}
+
+</body>
+</html>

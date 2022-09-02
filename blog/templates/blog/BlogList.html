@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+    <form method="get">
+        <input type="submit" value="search">
+        {{form}}
+    </form>
+    {% for blog in post %}
+    <img src = {{blog.image.url}}>
+    <h3>{{blog.titel}}</h3>
+    {{blog.author}}
+    {{blog.date}}
+    <a href="{% url 'blog:BlogDetail' blog.id %}">detail</a>
+    {% endfor %}
+</body>
+</html>
