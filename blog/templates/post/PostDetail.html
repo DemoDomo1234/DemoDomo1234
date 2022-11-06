@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load social_share %}
+{% load blog_tags %}
+{% block content %}
+
+<p>{{post.body}}</p>
++<p>{{post.user.name}}</p>
+<p>{{post.time}}</p>
+
+{% post_view_count post %}
+
+{% if user == post.user %}
+<a class="btn btn-outline-warning" href="{% url 'blog:PostUpdate' post.id %}">update</a>
+<a class="btn btn-outline-danger" href="{% url 'blog:PostDelete' post.id %}">delete</a>
+<a class="btn btn-outline-success" href="{% url 'blog:ImageCreate' post.id %}">add image</a>
+{% endif %}
+
+{% if user in post.likes.all %}
+    <a href="{% url 'blog:PostLikes' post.id %}"><img src="../../../media/site/likes.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'blog:PostLikes' post.id %}"><img src="../../../media/site/unlikes.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% if user in post.unlikes.all %}
+    <a href="{% url 'blog:PostUnLikes' post.id %}"><img src="../../../media/site/unlike.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'blog:PostUnLikes' post.id %}"><img src="../../../media/site/un-unlike.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+<hr>
+{% for coment in coments %}
+<p>{{coment.body}}</p>
+<h4>{{coment.author}}</h4>
+<p>{{coment.date}}</p>
+{% if user == coment.author %}
+<a class="btn btn-outline-warning" href="{% url 'coments:ComentUpdate' coment.id %}">update</a>
+<a class="btn btn-outline-danger" href="{% url 'coments:ComentDelete' coment.id %}">delete</a>
+{% endif %}
+{% if user in coment.likes.all %}
+    <a href="{% url 'coments:ComentLikes' coment.id %}"><img src="../../../media/site/likes.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'coments:ComentLikes' coment.id %}"><img src="../../../media/site/unlikes.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% if user in coment.unlikes.all %}
+    <a href="{% url 'coments:ComentUnLikes' coment.id %}"><img src="../../../media/site/unlike.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'coments:ComentUnLikes' coment.id %}"><img src="../../../media/site/un-unlike.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% endfor %} 
+<a class="btn btn-outline-secondary" href="{% url 'coments:ComentCreate' post.id %}">ComentCreate</a>
+
+<hr>
+
+<script>
+    const myModal = document.getElementById('myModal')
+    const myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', () => {
+      myInput.focus()
+})
+</script>
+{% endblock %}

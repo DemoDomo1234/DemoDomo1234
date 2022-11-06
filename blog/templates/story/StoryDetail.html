@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load social_share %}
+{% load blog_tags %}
+{% block content %}
+<video controls> 
+  <source src="{{story.files.url}}" >
+   </video>
+<p>{{story.body}}</p>
+<p>{{story.user.name}}</p>
+<p>{{story.time}}</p>
+{% if user == story.user %}
+<a class="btn btn-outline-warning" href="{% url 'blog:StoryUpdate' story.id %}">update</a>
+<a class="btn btn-outline-danger" href="{% url 'blog:StoryDelete' story.id %}">delete</a>
+{% endif %}
+{% if user in story.likes.all %}
+<a href="{% url 'blog:StoryLikes' story.id %}"><img src="../../../media/site/likes.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+<a href="{% url 'blog:StoryLikes' story.id %}"><img src="../../../media/site/unlikes.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+<hr>
+
+{% for coment in coments %}
+<p>{{coment.body}}</p>
+<h4>{{coment.author}}</h4>
+<p>{{coment.date}}</p>
+{% if user == coment.author %}
+<a class="btn btn-outline-warning" href="{% url 'coments:ComentUpdate' coment.id %}">update</a>
+<a class="btn btn-outline-danger" href="{% url 'coments:ComentDelete' coment.id %}">delete</a>
+{% endif %}
+{% if user in coment.likes.all %}
+    <a href="{% url 'coments:ComentLikes' coment.id %}"><img src="../../../media/site/likes.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'coments:ComentLikes' coment.id %}"><img src="../../../media/site/unlikes.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% if user in coment.unlikes.all %}
+    <a href="{% url 'coments:ComentUnLikes' coment.id %}"><img src="../../../media/site/unlike.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'coments:ComentUnLikes' coment.id %}"><img src="../../../media/site/un-unlike.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% endfor %} 
+<a class="btn btn-outline-secondary" href="{% url 'coments:ComentCreate' blog.id %}">ComentCreate</a>
+
+<script>
+    const myModal = document.getElementById('myModal')
+    const myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', () => {
+      myInput.focus()
+})
+</script>
+{% endblock %}

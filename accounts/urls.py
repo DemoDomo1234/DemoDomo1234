@@ -1,14 +1,15 @@
 from django.urls import path 
-from .views import Profile , SingupView , LoginView , LogoutView , UserList , Profile1 , folo , unfolo
+from . import views
 
 app_name = "accounts"
 urlpatterns = [
-    path('LoginView',LoginView.as_view(), name='Login'),
-    path('SingupView',SingupView.as_view(), name='Singup'),
-    path('Profile<pk>',Profile.as_view(), name='Profile'),
-    path('detail<pk>',Profile1.as_view(), name='Profile1'),
-    path('user',UserList.as_view(), name='home'),
-    path('logout', LogoutView , name='logout'),
-    path('folo/<foloid>' , folo , name = 'folo'),
-    path('unfolo/<foloid>' , unfolo , name = 'unfolo'),
+    path('login', views.UserLoginView.as_view(), name='Login'),
+    path('singup', views.SingupView.as_view(), name='Singup'),
+    path('profile/<pk>' , views.ProfileView.as_view(), name='Profile'),
+    path('edit-profile/<pk>' , views.EditProfileView.as_view(), name='EditProfile'),
+    path('user-list', views.UserListView.as_view(), name='UserList'),
+    path('logout', views.UserLogoutView.as_view(), name='Logout'),
+    path('folow/<pk>', views.FolowView.as_view(), name='Folow'),
+    path('noty/<pk>', views.NotyView.as_view(), name='Noty'),
+    path('change-passowrd/<pk>', views.ChangePassowrdView.as_view(), name='ChangePassowrd'),
 ] 

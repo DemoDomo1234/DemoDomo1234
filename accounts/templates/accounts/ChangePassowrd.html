@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<form  enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    <p>old_password</p>
+    <input class="btn btn-outline-light" type="password" name="old_password">
+    <p>new_password1</p>
+    <input class="btn btn-outline-light" type="password" name="new_password1">
+    <p>new_password2</p>
+    <input class="btn btn-outline-light" type="password" name="new_password2">
+    <br>
+    <br>
+    <input type="submit" value="change" class="btn btn-secondary">
+</form>
+{% endblock %}

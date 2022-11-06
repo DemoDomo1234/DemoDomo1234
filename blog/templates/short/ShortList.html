@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<hr>
+
+  {% for blog in post %}
+  <video controls> 
+    <source src="{{blog.files.url}}" >
+     </video>
+  <p>{{blog.body}}</p>
+  <p>{{blog.user.name}}</p>
+  <p>{{blog.time}}</p>
+<hr>
+
+  {% endfor %}
+    {% endblock %}
