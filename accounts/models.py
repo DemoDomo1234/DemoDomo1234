@@ -2,6 +2,9 @@ from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from neomodel import StructuredNode, StringProperty, RelationshipTo, RelationshipTo
+from uuid import uuid4
+
 
 class MyUserManager(BaseUserManager):
     def create_user(self, email, name, body, image, password=None,
@@ -25,6 +28,7 @@ class MyUserManager(BaseUserManager):
         user.is_staff = True
         user.save(using=self._db)
         return user
+
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length=200)
@@ -60,3 +64,16 @@ class User(AbstractBaseUser):
         # Simplest possible answer: Yes, always
         return True
 
+
+class Following(StructuredNode):
+    code = StringProperty(unique_index=True, default=uuid4)
+    name = StringProperty(index=True)
+    folowers = RelationshipTo('Following','FOLOWER')
+
+
+class OTPCode(models.Model):
+    user = models.ForeignKey(User, related_name='user_otp', on_delete=models.CASCADE)
+    code = models.CharField(max_length=4)
+    created = models.DateTimeField(auto_now_add=True)
+
+    

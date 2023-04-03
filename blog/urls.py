@@ -1,66 +1,23 @@
 from django.urls import path 
-from .views import (
-                    BlogCreateView, BlogUpdateView, BlogDeleteView,
-                    BlogListView, BlogDetailView, BlogSavedView,
-                    BlogLikesView, BlogUnLikesView, SavedListView,
-                    StoryListView, StoryCreateView, StoryUpdateView,
-                    StoryDeleteView, ShortListView, ShortCreateView,
-                    ShortUpdateView, ShortDeleteView, PostListView,
-                    PostCreateView, PostUpdateView, PostDeleteView,
-                    PostLikesView, PostUnLikesView, ShortLikesView,
-                    ShortUnLikesView, StoryLikesView, TagListView,
-                    ListCreateView, ListUpdateView, ListDeleteView,
-                    PlayListCreateView, PlayListUpdateView, MyListView,
-                    PlayListDeleteView, ImageCreateView, ImageUpdateView,
-                    ImageDeleteView, AddToListView, AddToPlayListView,
-                    MyPlayListView, StoryDetailView, ShortDetailView,
-                    PostDetailView
-                    )
+from . import views
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.views.decorators.cache import cache_page
+
+
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
 
 app_name = 'blog'
 
 urlpatterns = [
-    path('',BlogListView.as_view(), name='BlogList'),
-    path('blog/create', BlogCreateView.as_view(), name='BlogCreate'),
-    path('blog/update/<pk>', BlogUpdateView.as_view(), name='BlogUpdate'),
-    path('blog/delete/<pk>', BlogDeleteView.as_view(), name='BlogDelete'),
-    path('blog/detail/<pk>', BlogDetailView.as_view(), name='BlogDetail'),
-    path('blog/likes/<pk>', BlogLikesView.as_view(), name='BlogLikes'),
-    path('blog/saved/<pk>', BlogSavedView.as_view(), name='BlogSaved'),
-    path('blog/unlikes/<pk>', BlogUnLikesView.as_view(), name='BlogUnLikes'),
-    path('blog/saved', SavedListView.as_view(), name='savedlist'),
-    path('blog/story-list', StoryListView.as_view(), name='StoryList'),
-    path('blog/story-create', StoryCreateView.as_view(), name='StoryCreate'),
-    path('blog/story-update/<pk>', StoryUpdateView.as_view(), name='StoryUpdate'),
-    path('blog/story-delete/<pk>', StoryDeleteView.as_view(), name='StoryDelete'),
-    path('blog/story-detail/<pk>', StoryDetailView.as_view(), name='StoryDetail'),
-    path('blog/short-list', ShortListView.as_view(), name='ShortList'),
-    path('blog/short-create', ShortCreateView.as_view(), name='ShortCreate'),
-    path('blog/short-update/<pk>', ShortUpdateView.as_view(), name='ShortUpdate'),
-    path('blog/short-delete/<pk>', ShortDeleteView.as_view(), name='ShortDelete'),
-    path('blog/short-detail/<pk>', ShortDetailView.as_view(), name='ShortDetail'),
-    path('blog/post-list', PostListView.as_view(), name='PostList'),
-    path('blog/post-create', PostCreateView.as_view(), name='PostCreate'),
-    path('blog/post-update/<pk>', PostUpdateView.as_view(), name='PostUpdate'),
-    path('blog/post-delete/<pk>', PostDeleteView.as_view(), name='PostDelete'),
-    path('blog/post-likes/<pk>', PostLikesView.as_view(), name='PostLikes'),
-    path('blog/post-unlikes/<pk>', PostUnLikesView.as_view(), name='PostUnLikes'),
-    path('blog/post-detail/<pk>', PostDetailView.as_view(), name='PostDetail'),
-    path('blog/short-likes/<pk>', ShortLikesView.as_view(), name='ShortLikes'),
-    path('blog/short-unlikes/<pk>', ShortUnLikesView.as_view(), name='ShortUnLikes'),
-    path('blog/story-likes/<pk>', StoryLikesView.as_view(), name='StoryLikes'),
-    path('blog/tag-list/<pk>', TagListView.as_view(), name='TagList'),
-    path('blog/list-create', ListCreateView.as_view(), name='ListCreate'),
-    path('blog/list-update/<pk>', ListUpdateView.as_view(), name='ListUpdate'),
-    path('blog/list-delete/<pk>', ListDeleteView.as_view(), name='ListDelete'),
-    path('blog/play-Lit-create', PlayListCreateView.as_view(), name='ListCreate'),
-    path('blog/play-list-update/<pk>', PlayListUpdateView.as_view(), name='PlayListUpdate'),
-    path('blog/my-list/<pk>', MyListView.as_view(), name='MyList'),
-    path('blog/play-list-delete/<pk>', PlayListDeleteView.as_view(), name='PlayListDelete'),
-    path('blog/image-create/<pk>', ImageCreateView.as_view(), name='ImageCreate'),
-    path('blog/image-update/<pk>', ImageUpdateView.as_view(), name='ImageUpdate'),
-    path('blog/image-delete/<pk>', ImageDeleteView.as_view(), name='ImageDelete'),
-    path('blog/add-to-list/<pk>', AddToListView.as_view(), name='AddToList'),
-    path('blog/add-to-play-list/<pk>', AddToPlayListView.as_view(), name='AddToPlayList'),
-    path('blog/my-play-list/<pk>', MyPlayListView.as_view(), name='MyPlayList'),
+    path('', cache_page(CACHE_TTL)(views.BlogListView.as_view()), name='BlogList'),
+    path('blog/create', views.BlogCreateView.as_view(), name='BlogCreate'),
+    path('blog/update/<pk>', views.BlogUpdateView.as_view(), name='BlogUpdate'),
+    path('blog/delete/<pk>', views.BlogDeleteView.as_view(), name='BlogDelete'),
+    path('blog/detail/<pk>', views.BlogDetailView.as_view(), name='BlogDetail'),
+    path('blog/likes/<pk>', views.BlogLikesView.as_view(), name='BlogLikes'),
+    path('blog/saved/<pk>', views.BlogSavedView.as_view(), name='BlogSaved'),
+    path('blog/unlikes/<pk>', views.BlogUnLikesView.as_view(), name='BlogUnLikes'),
+    path('blog/saved', cache_page(CACHE_TTL)(views.SavedListView.as_view()), name='savedlist'),
 ] 

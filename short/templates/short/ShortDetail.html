@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load social_share %}
+{% load blog_tags %}
+{% block content %}
+  <video controls> 
+    <source src="{{short.film.url}}" >
+     </video>
+<p>{{short.body}}</p>
+<p>{{short.user.name}}</p>
+<p>{{short.time}}</p>
+{% short_view_count short %}
+{% if user == blog.user %}
+<a class="btn btn-outline-warning" href="{% url 'short:ShortUpdate' blog.id %}">update</a>
+<a class="btn btn-outline-danger" href="{% url 'short:ShortDelete' blog.id %}">delete</a>
+{% endif %}
+<a class="btn btn-outline-secondary" href="{% url 'list:AddToList' blog.id %}">AddToList</a>
+
+
+
+<img data-bs-target="#staticBackdrop" data-bs-toggle="modal" src="../../../media/site/share.png" style="width: 50px; height: 30px;">
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">share post whit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body bg-dark">
+        {% post_to_facebook object_or_url 'facebook' %}
+        {% post_to_twitter "New Song: {{blog.titel}}. Check it out!" object_or_url 'twitter' %}
+        {% post_to_telegram "New Song: {{blog.titel}}. Check it out!" object_or_url 'telegram' %}
+        {% post_to_whatsapp object_or_url 'whatsapp' %}
+        {% add_pinterest_script %}
+        {% post_to_gplus object_or_url 'gplus' %}
+        {% post_to_linkedin object_or_url %}
+        {% send_email '{{blog.titel}}' '{{blog.body}}' object_or_url 'send_email' %}
+        {% post_to_reddit '{{blog.titel}}' object_or_url 'reddit' %}      
+        {% save_to_pinterest object_or_url %}
+        {% copy_to_clipboard object_or_url 'clipboard' %}
+        {% add_copy_script %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% if user in short.likes.all %}
+<a href="{% url 'short:ShortLikes' short.id %}"><img src="../../../media/site/likes.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+<a href="{% url 'short:ShortLikes' short.id %}"><img src="../../../media/site/unlikes.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% if user in short.unlikes.all %}
+<a href="{% url 'short:ShortUnLikes' short.id %}"><img src="../../../media/site/unlike.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+<a href="{% url 'short:ShortUnLikes' short.id %}"><img src="../../../media/site/un-unlike.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    {% for tag in short.tag.all %}
+    <li class="breadcrumb-item"><a href="{% url 'list:TagList' tag.id %}">{{tag}}</a></li>
+    {% endfor %}
+  </ol>
+</nav>
+<hr>
+{% for coment in coments %}
+<p>{{coment.body}}</p>
+<h4>{{coment.author}}</h4>
+<p>{{coment.date}}</p>
+{% if user == coment.author %}
+<a class="btn btn-outline-warning" href="{% url 'coments:ComentUpdate' coment.id %}">update</a>
+<a class="btn btn-outline-danger" href="{% url 'coments:ComentDelete' coment.id %}">delete</a>
+{% endif %}
+{% if user in coment.likes.all %}
+    <a href="{% url 'coments:ComentLikes' coment.id %}"><img src="../../../media/site/likes.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'coments:ComentLikes' coment.id %}"><img src="../../../media/site/unlikes.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% if user in coment.unlikes.all %}
+    <a href="{% url 'coments:ComentUnLikes' coment.id %}"><img src="../../../media/site/unlike.png" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'coments:ComentUnLikes' coment.id %}"><img src="../../../media/site/un-unlike.png" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% endfor %} 
+<a class="btn btn-outline-secondary" href="{% url 'coments:ComentCreate' blog.id %}">ComentCreate</a>
+
+<hr>
+<div class="row row-cols-auto mydiv">
+  {% for blog in blogs %}
+  <div class="card bg-dark btn-outline-light" style="width: 18rem;">
+      <video controls class="card-img-top"> 
+        <source src="{{short.film.url}}" >
+         </video>
+      <div class="card-body">
+        <p class="card-text">{{blog.user.name}}</p>
+        <p class="card-text">{{blog.time}}</p>
+        <a href="{% url 'short:ShortDetail' blog.id %}" class="btn btn-outline-primary">detail</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+<hr>
+
+<script>
+    const myModal = document.getElementById('myModal')
+    const myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', () => {
+      myInput.focus()
+})
+</script>
+{% endblock %}

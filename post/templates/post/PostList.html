@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<hr>
+    {% for blog in post %}
+    <p>{{blog.body}}</p>
+    <p>{{blog.user.name}}</p>
+    <p>{{blog.time}}</p>
+    <a href="{% url 'post:PostDetail' blog.id %}" class="btn btn-outline-primary">detail</a>
+    {% endfor %}
+    {% endblock %}

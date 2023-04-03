@@ -5,7 +5,12 @@ from django.urls import reverse_lazy
 from django.views import View
 from .mixins import ComentMixin
 from accounts.mixins import MyLoginRequiredMixin
-from blog.models import (Blog, Story, Short, Post)
+from blog.models import Blog
+from story.models import Story
+from short.models import Short
+from post.models import Post
+
+
 
 class ComentCreateView(MyLoginRequiredMixin, CreateView):
 	model = Coments
@@ -13,7 +18,7 @@ class ComentCreateView(MyLoginRequiredMixin, CreateView):
 	template_name = "coments/ComentCreate.html"
 	
 	def get_form(self, form_class=None):
-		form = super(ComentCreateView, self).get_form(form_class)
+		form = super().get_form(form_class)
 		form['body'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		return form   
 
@@ -31,7 +36,8 @@ class ComentCreateView(MyLoginRequiredMixin, CreateView):
 				except:
 					coment = Story.objects.get(id=my_id)
 		form.instance.content_object = coment
-		return super(ComentCreateView, self).form_valid(form)
+		return super().form_valid(form)
+
 
 class OneComentsView(View):
 	def dispatch(self, request, pk, *args, **kwargs):
@@ -51,6 +57,7 @@ class OneComentsView(View):
 		else:
 			return redirect('accounts:Login')
 
+
 class TowComentsView(View):
 	def dispatch(self, request, pk, *args, **kwargs):
 		coment = Coments.objects.get(id=pk)
@@ -69,20 +76,23 @@ class TowComentsView(View):
 		else:
 			return redirect('accounts:Login')
 
+
 class ComentUpdateView(ComentMixin, UpdateView):
 	model = Coments
 	fields = ('body',)
 	template_name = "coments/ComentUpdate.html"
 
 	def get_form(self, form_class=None):
-		form = super(ComentUpdateView, self).get_form(form_class)
+		form = super().get_form(form_class)
 		form['body'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		return form 
+
 
 class ComentDeleteView(ComentMixin, DeleteView):
 	model = Coments
 	success_url = reverse_lazy("blog:BlogList")
 	template_name = "coments/ComentDelete.html"
+
 
 class ComentLikesView(View):
 	def dispatch(self, request, pk, *args, **kwargs):
@@ -101,6 +111,7 @@ class ComentLikesView(View):
 
 		return redirect('coments:ComentList')
 
+
 class ComentUnLikesView(View):
 	def dispatch(self, request, pk, *args, **kwargs):
 		user = request.user
@@ -116,3 +127,4 @@ class ComentUnLikesView(View):
 			return redirect('accounts:Login')
 
 		return redirect('coments:ComentList')
+
