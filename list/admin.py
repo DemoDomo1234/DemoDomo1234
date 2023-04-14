@@ -9,6 +9,7 @@ class ListAdmin(admin.ModelAdmin):
 
 admin.site.register(List, ListAdmin)
 
+
 class PlayListAdmin(admin.ModelAdmin):
     list_display = ("user",)
     list_filter = ("time", "user",)

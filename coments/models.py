@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 
+
 class Coments(models.Model):
     one_coments = models.ForeignKey('self', related_name="my_one_coments", on_delete=models.CASCADE , null=True , blank=True , default=None)
     tow_coments = models.ForeignKey('self', related_name="my_tow_coments", on_delete=models.CASCADE , null=True , blank=True , default=None)

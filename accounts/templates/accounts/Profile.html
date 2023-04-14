@@ -6,7 +6,7 @@
 <p>{{user.email}}</p>
 <a class="btn btn-outline-warning" href="{% url 'accounts:EditProfile' user.id %}">EditProfile</a> 
 {% if user in user.folower.all %}
-<a class="nav-item btn btn-outline-secondary" href="{% url 'accounts:Folow' user.id %}">UnFolow</a>
+<a class="nav-item btn btn-outline-dark" href="{% url 'accounts:Folow' user.id %}">UnFolow</a>
 {% else %}
 <a class="nav-item btn btn-outline-danger" href="{% url 'accounts:Folow' user.id %}">Folow</a>
 {% endif %}
@@ -17,28 +17,31 @@
 {% endif %}
 <a class="nav-item btn btn-outline-danger" href="{% url 'accounts:ChangePassowrd' user.id %}">ChangePassowrd</a> 
 <hr>
-
+<h4>folowers</h4>
+{% for folow in following %}
+<p>{{folow.name}}</p>
+{% endfor %}
 <h4>lists</h4>
 <hr>
     {% for blog in lists %}
           <h5>{{blog.titel}}</h5>
           <p>{{blog.body}}</p>
           {% if user == blog.user %}
-          <a class="btn btn-outline-warning" href="{% url 'blog:ListUpdate' blog.id %}">update</a>
-          <a class="btn btn-outline-danger" href="{% url 'blog:ListDelete' blog.id %}">delete</a>
-          <a href="{% url 'blog:MyList' blog.id %}" class="btn btn-outline-primary">detail</a>
+          <a class="btn btn-outline-warning" href="{% url 'list:ListUpdate' blog.id %}">update</a>
+          <a class="btn btn-outline-danger" href="{% url 'list:ListDelete' blog.id %}">delete</a>
+          <a href="{% url 'list:MyList' blog.id %}" class="btn btn-outline-primary">detail</a>
           {% endif %}
           <hr>
       {% endfor %}
 <h4>playlists</h4>
 <hr>
-{% for blog in playlists %}
+{% for blog in palylists%}
 <h5>{{blog.titel}}</h5>
 <p>{{blog.body}}</p>
 {% if user == blog.user %}
-<a class="btn btn-outline-warning" href="{% url 'blog:PlayListUpdate' blog.id %}">update</a>
-<a class="btn btn-outline-danger" href="{% url 'blog:PlayListDelete'  blog.id %}">delete</a>
-<a href="{% url 'blog:MyPlayList' blog.id %}" class="btn btn-outline-primary">detail</a>
+<a class="btn btn-outline-warning" href="{% url 'list:PlayListUpdate' blog.id %}">update</a>
+<a class="btn btn-outline-danger" href="{% url 'list:PlayListDelete'  blog.id %}">delete</a>
+<a href="{% url 'list:MyPlayList' blog.id %}" class="btn btn-outline-primary">detail</a>
 
 {% endif %}
 <hr>

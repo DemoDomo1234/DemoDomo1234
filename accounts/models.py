@@ -67,7 +67,8 @@ class User(AbstractBaseUser):
 
 class Following(StructuredNode):
     code = StringProperty(unique_index=True, default=uuid4)
-    name = StringProperty(index=True)
+    name = StringProperty()
+    user_id = StringProperty(index=True)
     folowers = RelationshipTo('Following','FOLOWER')
 
 

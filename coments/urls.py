@@ -3,7 +3,10 @@ from .views import (ComentCreateView, ComentUpdateView, ComentDeleteView,
                     ComentLikesView, ComentUnLikesView
                     )
 
+
 app_name = 'coments'
+
+
 urlpatterns = [
     path('create/<pk>',ComentCreateView.as_view(), name='ComentCreate'),
     path('update<pk>',ComentUpdateView.as_view(), name='ComentUpdate'),

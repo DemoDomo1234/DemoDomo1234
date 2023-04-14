@@ -1,13 +1,14 @@
 from django.urls import path 
 from . import views
-from blog.urls import CACHE_TTL
-from django.views.decorators.cache import cache_page
+
 
 app_name = "accounts"
+
+
 urlpatterns = [
     path('login', views.UserLoginView.as_view(), name='Login'),
     path('singup', views.SingupView.as_view(), name='Singup'),
-    path('profile/<pk>' , cache_page(CACHE_TTL)(views.ProfileView.as_view()), name='Profile'),
+    path('profile/<pk>' , views.ProfileView.as_view(), name='Profile'),
     path('edit-profile/<pk>' , views.EditProfileView.as_view(), name='EditProfile'),
     path('user-list', views.UserListView.as_view(), name='UserList'),
     path('logout', views.UserLogoutView.as_view(), name='Logout'),

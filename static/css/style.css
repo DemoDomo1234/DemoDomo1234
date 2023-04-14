@@ -11,20 +11,7 @@ body {
 }
 p{
    font-family: 'Courier New', Courier, monospace; 
-   color: aliceblue;
 }
-h5 , h4 , h3 {
-   color: aliceblue;
-
-}
-hr{
-    color: aliceblue;
- 
- }
-label{
-    color: aliceblue;
- 
- }
 video
 {
     width: 600px;

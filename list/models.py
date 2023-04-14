@@ -15,6 +15,7 @@ class List(models.Model):
     def get_absolute_url(self):
         return reverse("blog:BlogList")
 
+
 class PlayList(models.Model):
     titel = models.CharField(max_length=50 , unique=True)
     user = models.ForeignKey(User, related_name='play_list_user', on_delete=models.CASCADE)

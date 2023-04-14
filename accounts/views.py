@@ -1,12 +1,12 @@
 from django.shortcuts import render , redirect
-from django.views.generic import UpdateView , FormView , ListView , DetailView , CreateView
+from django.views.generic import UpdateView , ListView, DetailView, CreateView
 from .models import User, Following, OTPCode
 from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from blog.models import Blog
 from django.contrib.auth.views import LoginView
 from django.views import View
-from .mixins import UserMixin, MyLoginRequiredMixin
+from .mixins import UserMixin
 from list.models import  List, PlayList
 from blog.models import Blog
 from .tasks import send_mail_task
@@ -16,7 +16,7 @@ from random import randint
 class EditProfileView(UserMixin, UpdateView):
 	model = User
 	template_name = "accounts/EditProfile.html"
-	fields = ('password', 'email', 'body', 'image', 'name')
+	fields = ('body', 'email', 'image', 'name')
 	success_url = reverse_lazy("blog:BlogList")
 
 	def get_form(self, form_class=None):
@@ -24,7 +24,6 @@ class EditProfileView(UserMixin, UpdateView):
 		form['email'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		form['body'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		form['name'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
-		form['password'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		return form   
 
 
@@ -34,9 +33,9 @@ class ProfileView(UserMixin, DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['lists'] = self.model.list_user.all()
-		context['palylists'] = self.model.play_list_user.all()
-		context['following'] = Following.nodes.filter(name=self.model.name)
+		context['lists'] = List.objects.filter(user__id=self.request.user.id)
+		context['palylists'] = PlayList.objects.filter(user__id=self.request.user.id)
+		context['following'] = Following.nodes.get(user_id=self.request.user.id).folowers.all()
 
 		return context
 
@@ -67,7 +66,6 @@ class SingupView(CreateView):
 				is_num = True
 		if len(password) < 8 and is_num == True and is_str == True:
 			form.instance.set_password(password)
-		follow = Following(name=form.instance.name).save()
 		return super().form_valid(form)
 
 
@@ -121,8 +119,8 @@ class FolowView(View):
 		user = request.user
 		account = User.objects.get(id=pk)
 		if user.is_authenticated:
-			folower = Following.nodes.get(name=user.name)
-			folowing = Following.nodes.get(name=account.name)
+			folower = Following.nodes.get(user_id=user.id)
+			folowing = Following.nodes.get(user_id=account.id)
 			if user not in account.folower.all():
 				account.folower.add(user)
 				folower.folowers.connect(folowing)

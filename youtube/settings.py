@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django_neomodel',
     'django_celery_beat',
     'channels',
+    'django_elasticsearch_dsl'
 ]
 
 
@@ -117,11 +118,17 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
+
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 AUTH_USER_MODEL = 'accounts.User'
+
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -130,13 +137,17 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'demodomone@gmail.com'
 DEFAULT_FORM_EMAIL = 'demodomone@gmail.com'
 EMAIL_HOST_PASSWORD = 'jjbkvvclqseeixhx'
+
+
 LOGIN_REDIRECT_URL = 'blog:BlogList'
+
 
 INTERNAL_IPS = [
    '127.0.0.1',
 ]
 
-NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:neo4j@localhost:7687'
+
+NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:demodomo@localhost:7687'
 NEOMODEL_SIGNALS = True
 NEOMODEL_FORCE_TIMEZONE = False
 NEOMODEL_MAX_CONNECTION_POOL_SIZE = 50
@@ -149,6 +160,6 @@ ELASTICSEARCH_DSL={
 }
 
 
-config.DATABASE_URL = 'bolt://neo4j:neo4j@localhost:7687'  # default
-db.set_connection('bolt://neo4j:neo4j@localhost:7687')
-# config.DATABASE_URL = os.environ["NEO4J_BOLT_URL"]
+config.DATABASE_URL = 'bolt://neo4j:demodomo@localhost:7687'
+db.set_connection('bolt://neo4j:demodomo@localhost:7687')
+

@@ -1,6 +1,7 @@
 from .models import User
 from django.shortcuts import redirect , get_object_or_404
 
+
 class UserMixin():
     def dispatch(self, request, pk, *args, **kwargs):
         user = request.user
@@ -12,6 +13,7 @@ class UserMixin():
                 return redirect('blog:BlogList')
         else:
             return redirect('accounts:Login')
+
 
 class MyLoginRequiredMixin():
     def dispatch(self, request, *args, **kwargs):

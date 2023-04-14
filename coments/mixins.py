@@ -1,6 +1,7 @@
 from .models import Coments
 from django.shortcuts import redirect , get_object_or_404
 
+
 class ComentMixin():
     def dispatch(self, request, pk, *args, **kwargs):
         user = request.user

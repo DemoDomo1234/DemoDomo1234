@@ -79,7 +79,6 @@ class PlayListDeleteView(PlayListMixin, DeleteView):
     success_url = reverse_lazy('blog:BlogList')
 
 
-
 class AddToListView(View):
 	def dispatch(self, request, pk, *args, **kwargs):
 		user = request.user

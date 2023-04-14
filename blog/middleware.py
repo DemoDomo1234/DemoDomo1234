@@ -1,13 +1,14 @@
-from .models import (Blog, Story, Short, Post)
+from .models import Blog
+from story.models import Story
+from short.models import Short
+from post.models import Post
+
 
 class BlogMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        # One-time configuration and initialization.
 
     def __call__(self, request, pk):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
         blog = Blog.objects.get(id=pk)
         user = request.user
         if user in blog.views.all:
@@ -15,20 +16,14 @@ class BlogMiddleware:
         else:
             blog.views.add(user)
         response = self.get_response(request)
-
-        # Code to be executed for each request/response after
-        # the view is called.
-
         return response
+
 
 class StoryMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        # One-time configuration and initialization.
 
     def __call__(self, request, pk):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
         story = Story.objects.get(id=pk)
         user = request.user
         if user in story.views.all:
@@ -36,41 +31,30 @@ class StoryMiddleware:
         else:
             story.views.add(user)
         response = self.get_response(request)
-
-        # Code to be executed for each request/response after
-        # the view is called.
-
         return response
+
 
 class ShortMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        # One-time configuration and initialization.
+
 
     def __call__(self, request, pk):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
-        Short = short.objects.get(id=pk)
+        short = Short.objects.get(id=pk)
         user = request.user
         if user in short.views.all:
             short.views.remove(user)
         else:
             short.views.add(user)
         response = self.get_response(request)
-
-        # Code to be executed for each request/response after
-        # the view is called.
-
         return response
+
 
 class PostMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        # One-time configuration and initialization.
 
     def __call__(self, request, pk):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
         post = Post.objects.get(id=pk)
         user = request.user
         if user in post.views.all:
@@ -78,8 +62,4 @@ class PostMiddleware:
         else:
             post.views.add(user)
         response = self.get_response(request)
-
-        # Code to be executed for each request/response after
-        # the view is called.
-
         return response

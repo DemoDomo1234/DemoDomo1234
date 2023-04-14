@@ -1,4 +1,4 @@
-from django.shortcuts import (render , redirect , get_object_or_404)
+from django.shortcuts import redirect
 from django.views.generic import (ListView, CreateView, UpdateView,
 								  DeleteView, DetailView)
 from .models import Blog
@@ -16,7 +16,7 @@ class BlogListView(ListView):
 	template_name = 'blog/BlogList.html'
 
 	def get_queryset(self):
-		blog = Blog.objects.poblished()
+		blog = {}
 		if 'search' in self.request.GET :
 			search = self.request.GET.get('search')
 			blog = BlogDocument.search().filter("fuzzy", titel=search)
