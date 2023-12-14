@@ -1,5 +1,3 @@
-import json
-
 from channels.generic.websocket import WebsocketConsumer
 
 
@@ -8,10 +6,11 @@ class ChatConsumer(WebsocketConsumer):
         self.accept()
 
     def disconnect(self, close_code):
-        pass
+        self.close() 
 
-    def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
+    def receive(self, text_data=None, bytes_data=None):
+        if text_data:
+            self.send(text_data=text_data)
+        elif bytes_data:
+            self.send(bytes_data=bytes_data)
 
-        self.send(text_data=json.dumps({"message": message}))

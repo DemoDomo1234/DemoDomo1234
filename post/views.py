@@ -5,7 +5,7 @@ from .models import Image, Post
 from django.urls import reverse_lazy
 from django.views import View
 from .mixins import PostMixin, ImageMixin
-from accounts.mixins import MyLoginRequiredMixin
+from accounts.mixins import LoginRequiredMixin
 
 
 class PostListView(ListView):
@@ -17,24 +17,18 @@ class PostListView(ListView):
         return self.model.objects.all()
 
 
-class PostDetailView(MyLoginRequiredMixin, DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
 	model = Post
 	template_name = 'post/PostDetail.html'
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['coments'] = self.model.objects.get(id=self.kwargs['pk']).comments.all()
+		context['comments'] = self.model.objects.get(id=self.kwargs['pk']).comments.all()
+		context['images'] = Image.objects.all()
 		return context
-	
-	def blog_view(self):
-		user = self.request.user
-		if user not in self.model.views.all():
-			self.model.views.add(user)
-		else:
-			self.model.views.remove(user)
 
 
-class PostCreateView(MyLoginRequiredMixin, CreateView):
+class PostCreateView(LoginRequiredMixin, CreateView):
 	model = Post
 	fields = ('body',)
 	template_name = "post/PostCreate.html"
@@ -63,7 +57,7 @@ class PostUpdateView(PostMixin, UpdateView):
 class PostDeleteView(PostMixin, DeleteView):
     model = Post
     template_name = 'post/PostDelete.html'
-    success_url = reverse_lazy('blog:BlogList')
+    success_url = reverse_lazy('chat:VideoList')
 
 
 class PostLikesView(View):
@@ -71,8 +65,8 @@ class PostLikesView(View):
 		user = request.user
 		post = Post.objects.get(id=pk)
 		if user.is_authenticated:
-			if user in post.unlikes.all():
-				post.unlikes.remove(user)
+			if user in post.un_likes.all():
+				post.un_likes.remove(user)
 			if user not in post.likes.all():
 				post.likes.add(user)
 			else:
@@ -91,17 +85,17 @@ class PostUnLikesView(View):
 		if user.is_authenticated:
 			if user in post.likes.all():
 				post.likes.remove(user)
-			if user not in post.unlikes.all():
-				post.unlikes.add(user)
+			if user not in post.un_likes.all():
+				post.un_likes.add(user)
 			else:
-				post.unlikes.remove(user)			
+				post.un_likes.remove(user)			
 		else:
 			return redirect('accounts:Login')
 
 		return redirect('blog:PostDetail', post.id)
 
 
-class ImageCreateView(MyLoginRequiredMixin, CreateView):
+class ImageCreateView(LoginRequiredMixin, CreateView):
 	model = Image
 	fields = ('image',)
 	template_name = "image/ImageCreate.html"
@@ -121,4 +115,4 @@ class ImageUpdateView(ImageMixin, UpdateView):
 class ImageDeleteView(ImageMixin, DeleteView):
     model = Image
     template_name = 'image/ImageDelete.html'
-    success_url = reverse_lazy('blog:BlogList')
+    success_url = reverse_lazy('chat:VideoList')

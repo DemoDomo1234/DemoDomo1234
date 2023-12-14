@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form  enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    <textarea name="body" rows="4" cols="50">
+    </textarea>
+    <input type="submit" value="send" class="btn btn-primary">
+</form>
+
+{% endblock %}

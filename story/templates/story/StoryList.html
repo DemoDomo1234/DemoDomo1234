@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<hr>
 
-    {% for blog in post %}
-    <video controls> 
-      <source src="{{blog.files.url}}" >
-       </video>
-    <p>{{blog.body}}</p>
-    <p>{{blog.user.name}}</p>
-    <p>{{blog.time}}</p>
+{% for story in post %}
+  <video controls> 
+    <source src="{{story.files.url}}" >
+  </video>
+  <p>{{story.body}}</p>
+  <p>{{story.user.name}}</p>
+  <p>{{story.time}}</p>
+  <a href="{% url 'story:StoryDetail' story.id %}" class="btn btn-outline-light" style="width: 18rem;"><h5>detail</h5></a>
+{% endfor %}
 
-    {% endfor %}
     {% endblock %}

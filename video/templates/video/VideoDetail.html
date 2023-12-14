@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load social_share %}
+{% load video_tags %}
+{% load comments_tags %}
+
+{% load static %}
+
+{% block content %}
+
+<video controls> 
+  <source src="{{video.film.url}}" >
+</video>
+
+<h3>{{video.title}}</h3>
+<p>{{video.body}}</p>
+<p>{{video.author.name}}</p>
+<p>{{video.date}}</p>
+
+<br>
+<p>likes : {% video_like_count video %}</p>
+<p>unlikes : {% video_unlike_count video %}</p>
+<p>saved : {% video_saved_count video %}</p>
+<p>comments : {% video_comment_count video %}</p>
+<p>views : {% video_view_count video %}</p>
+<br>
+
+{% if user == video.author %}
+  <a class="btn btn-outline-warning" href="{% url 'video:VideoUpdate' video.id %}">update</a>
+  <a class="btn btn-outline-danger" href="{% url 'video:VideoDelete' video.id %}">delete</a>
+  <a class="btn btn-outline-dark" href="{% url 'list:AddToPlayList' video.id %}">AddToPlayList</a>
+{% endif %}
+
+<a class="btn btn-outline-dark" href="{% url 'list:AddToList' video.id %}">AddToList</a>
+<a class="btn btn-outline-dark" href="{% url 'comments:CommentCreate' pk=video.id obj='obj_video' %}">ComentCreate</a>
+
+<img data-bs-target="#staticBackdrop" data-bs-toggle="modal" src="{% static 'img/share.png' %}" style="width: 50px; height: 30px;">
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">share post whit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body bg-dark">
+        {% post_to_facebook object_or_url 'facebook' %}
+        {% post_to_twitter "New Song: {{video.title}}. Check it out!" object_or_url 'twitter' %}
+        {% post_to_telegram "New Song: {{video.title}}. Check it out!" object_or_url 'telegram' %}
+        {% post_to_whatsapp object_or_url 'whatsapp' %}
+        {% add_pinterest_script %}
+        {% post_to_gplus object_or_url 'gplus' %}
+        {% post_to_linkedin object_or_url %}
+        {% send_email '{{video.title}}' '{{video.body}}' object_or_url 'send_email' %}
+        {% post_to_reddit '{{video.title}}' object_or_url 'reddit' %}      
+        {% save_to_pinterest object_or_url %}
+        {% copy_to_clipboard object_or_url 'clipboard' %}
+        {% add_copy_script %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if user in video.likes.all %}
+    <a href="{% url 'video:VideoLikes' video.id %}"><img src="{% static 'img/likes.png' %}" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'video:VideoLikes' video.id %}"><img src="{% static 'img/unlikes.png' %}" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% if user in video.un_likes.all %}
+    <a href="{% url 'video:VideoUnLikes' video.id %}"><img src="{% static 'img/unlike.png' %}" style="width: 50px; height: 30px;"></a>
+{% else %}
+   <a href="{% url 'video:VideoUnLikes' video.id %}"><img src="{% static 'img/un-unlike.png' %}" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+{% if user in video.saved.all %}
+  <a href="{% url 'video:VideoSaved' video.id %}"><img src="{% static 'img/saved.png' %}" style="width: 50px; height: 30px;"></a>
+{% else %}
+  <a href="{% url 'video:VideoSaved' video.id %}"><img src="{% static 'img/unsaved.png' %}" style="width: 50px; height: 30px;"></a>
+{% endif %}
+
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    {% for tag in video.tag.all %}
+    <li class="breadcrumb-item"><a href="{% url 'list:TagList' tag.id %}">{{tag}}</a></li>
+    {% endfor %}
+  </ol>
+</nav>
+
+{% for comment in comments %}
+
+  <br>
+  <hr>
+
+  {% if comment.reply_to_reply %}
+    <p>reply_to_reply : {{comment.reply_to_reply}}</p>
+  {% elif comment.reply %}
+    <p>reply : {{comment.reply}}</p>
+  {% endif %}
+
+
+  <p>{{comment.body}}</p>
+  <h4>{{comment.author.name}}</h4>
+  <p>{{comment.date}}</p>
+
+  <br>
+  <p>likes : {% comment_like_count comment %}</p>
+  <p>unlikes : {% comment_un_like_count comment %}</p>
+  <p>reply : {% reply_comment_count comment %}</p>
+  <p>reply_to_reply : {% reply_to_reply_comment_count comment %}</p>
+  <br>
+
+  {% if user == comment.author %}
+    <a class="btn btn-outline-warning" href="{% url 'comments:CommentUpdate' comment.id %}">update</a>
+    <a class="btn btn-outline-danger" href="{% url 'comments:CommentDelete' comment.id %}">delete</a>
+  {% endif %}
+
+  {% if user in comment.likes.all %}
+    <a href="{% url 'comments:CommentLikes' comment.id %}"><img src="{% static 'img/likes.png' %}" style="width: 50px; height: 30px;"></a>
+  {% else %}
+    <a href="{% url 'comments:CommentLikes' comment.id %}"><img src="{% static 'img/unlikes.png' %}" style="width: 50px; height: 30px;"></a>
+  {% endif %}
+
+  {% if user in comment.un_likes.all %}
+    <a href="{% url 'comments:CommentUnLikes' comment.id %}"><img src="{% static 'img/unlike.png' %}" style="width: 50px; height: 30px;"></a>
+  {% else %}
+    <a href="{% url 'comments:CommentUnLikes' comment.id %}"><img src="{% static 'img/un-unlike.png' %}" style="width: 50px; height: 30px;"></a>
+  {% endif %}
+
+  {% if comment.reply%}
+    <a class="btn btn-outline-dark" href="{% url 'comments:ReplyToReplyComment' comment.id %}">ReplyToReplyComment</a>
+  {% else %}
+    <a class="btn btn-outline-dark" href="{% url 'comments:ReplyComment' comment.id %}">ReplyComment</a>
+  {% endif %}
+
+{% endfor %} 
+
+<div class="row row-cols-auto mydiv">
+  {% for video in videos %}
+  <hr>
+  <div class="card bg-dark btn-outline-light" style="width: 18rem;">
+      <img src="{{video.image.url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{video.title}}</h5>
+        <p class="card-text">{{video.author.name}}</p>
+        <p class="card-text">{{video.date}}</p>
+        <a href="{% url 'video:VideoDetail' video.id %}" class="btn btn-outline-primary">detail</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+<script>
+    const myModal = document.getElementById('myModal')
+    const myInput = document.getElementById('myInput')
+
+    myModal.addEventListener('shown.bs.modal', () => {
+      myInput.focus()
+})
+</script>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="row row-cols-auto mydiv">
+    {% for viedo in post %}
+    <div class="card bg-dark btn-outline-light" style="width: 18rem;">
+      <img src="{{viedo.image.url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{viedo.title}}</h5>
+        <p class="card-text">{{viedo.author.name}}</p>
+        <p class="card-text">{{viedo.date}}</p>
+        <a href="{% url 'viedo:ViedoDetail' viedo.id %}" class="btn btn-outline-primary">detail</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+<hr>
+
+{% endblock %}

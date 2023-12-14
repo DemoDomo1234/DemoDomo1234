@@ -6,44 +6,57 @@ from neomodel import StructuredNode, StringProperty, RelationshipTo, Relationshi
 from uuid import uuid4
 
 
-class MyUserManager(BaseUserManager):
+class UserManager(BaseUserManager):
     def create_user(self, email, name, body, image, password=None,
-                    is_admin=False, is_staff=False, is_active=True,
-                    is_superuser=True):
+                    is_admin=False, is_staff=False, is_active=False,
+                    is_superuser=False):
+        
         if not email:
             raise ValueError('Users must have an email address')
         else:
             email=self.normalize_email(email),
-            user=self.model(email=email, name=name, body=body, image=image)
+            
+            user=self.model(email=email, name=name,
+                            body=body, image=image)
+            
             user.set_password(password)
             user.save(using=self._db)
+
             return user
+            
 
     def create_superuser(self, email, body,
-                        image, name, password=None ):
+                        image, name, password=None):
+        
         user = self.create_user(name=name, email=email, body=body,
                                 image=image, password=password)
+        
         user.is_superuser = True
         user.is_admin = True
         user.is_staff = True
+        user.is_active = True
         user.save(using=self._db)
+
         return user
 
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=254, unique=True)
-    body = models.TextField(null=True , blank= True)
-    image = models.ImageField(upload_to='mdia' , null=True , blank= True)
-    folower = models.ManyToManyField("self", related_name='folo', blank=True, symmetrical=False)
-    notifications =  models.ManyToManyField("self", related_name='noty', blank=True, symmetrical=False)
-    is_active = models.BooleanField(default=True)
+    body = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to='user_image',
+                            null=True, blank=True)
+    follower = models.ManyToManyField("self", related_name='follow',
+                                    blank=True, symmetrical=False)
+    notifications =  models.ManyToManyField("self", related_name='user_notification',
+                                            blank=True, symmetrical=False)
+    is_active = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    last_login = models.DateField(null=True , blank=True)
+    last_login = models.DateField(null=True, blank=True)
     
-    objects = MyUserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['image', 'body', 'name']
@@ -52,7 +65,7 @@ class User(AbstractBaseUser):
         return self.email
         
     def get_absolute_url(self):
-        return reverse("accounts:home")
+        return reverse("accounts:Profile", args=[self.id])
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
@@ -69,7 +82,7 @@ class Following(StructuredNode):
     code = StringProperty(unique_index=True, default=uuid4)
     name = StringProperty()
     user_id = StringProperty(index=True)
-    folowers = RelationshipTo('Following','FOLOWER')
+    followers = RelationshipTo('Following', 'FOLLOWER')
 
 
 class OTPCode(models.Model):

@@ -6,8 +6,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.db.models import Count
 from .mixins import StoryMixin
-from accounts.mixins import MyLoginRequiredMixin
-import datetime 
+from accounts.mixins import LoginRequiredMixin
 
 
 class StoryListView(ListView):
@@ -18,41 +17,21 @@ class StoryListView(ListView):
 	def get_queryset(self):
 		return self.model.objects.all()
 
-	def story_active(self):
-		today = datetime.date.today()
-		for model in self.model.objects.all():
-			fenish_day = model.time + datetime.relativedelta(day=7)
-			if fenish_day > today:
-				model.delete()
 
-
-class StoryDetailView(MyLoginRequiredMixin, DetailView):
+class StoryDetailView(LoginRequiredMixin, DetailView):
 	model = Story
 	template_name = 'story/StoryDetail.html'
 
 	def get_context_data(self, **kwargs):
-		tag = self.model.tag.values_list('id' , flat = True)
+		tag = self.model.tag.values_list('id', flat=True)
 		context = super().get_context_data(**kwargs)
-		context['blogs'] = self.model.objects.filter(tag__in = tag ).exclude(
-		id = self.kwargs['pk']).annotate(tag_count = Count('tag')).order_by('-tag_count')
-		context['coments'] = self.model.objects.get(id=self.kwargs['pk']).comments.all()
+		context['blogs'] = self.model.objects.filter(tag__in=tag).exclude(
+		id=self.kwargs['pk']).annotate(tag_count=Count('tag')).order_by('-tag_count')
+		context['comments'] = self.model.objects.get(id=self.kwargs['pk']).comments.all()
 		return context
 
-	def blog_view(self):
-		user = self.request.user
-		if user not in self.model.views.all():
-			self.model.views.add(user)
-		else:
-			self.model.views.remove(user)
 
-	def story_active(self):
-		today = datetime.date.today()
-		fenish_day = self.model.time + relativedelta(day=7)
-		if fenish_day > today:
-			self.model.delete()
-
-
-class StoryCreateView(MyLoginRequiredMixin, CreateView):
+class StoryCreateView(LoginRequiredMixin, CreateView):
 	model = Story
 	fields = ('body', 'files', 'tag')
 	template_name = "story/StoryCreate.html"
@@ -82,7 +61,7 @@ class StoryUpdateView(StoryMixin, UpdateView):
 class StoryDeleteView(StoryMixin, DeleteView):
     model = Story
     template_name = 'story/StoryDelete.html'
-    success_url = reverse_lazy('blog:BlogList')
+    success_url = reverse_lazy('chat:VideoList')
 
 
 class StoryLikesView(View):
@@ -90,8 +69,6 @@ class StoryLikesView(View):
 		user = request.user
 		story = Story.objects.get(id=pk)
 		if user.is_authenticated:
-			if user in story.unlikes.all():
-				story.unlikes.remove(user)
 			if user not in story.likes.all():
 				story.likes.add(user)
 			else:
@@ -99,5 +76,5 @@ class StoryLikesView(View):
 		else:
 			return redirect('accounts:Login')
 
-		return redirect('blog:StoryDetail', story.id)
+		return redirect('story:StoryDetail', story.id)
 

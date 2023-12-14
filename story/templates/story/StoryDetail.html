@@ -1,47 +1,80 @@
 {% extends 'base.html' %}
 {% load social_share %}
-{% load blog_tags %}
+{% load story_tags %}
+{% load comments_tags %}
+{% load static %}
+
 {% block content %}
+
 <video controls> 
   <source src="{{story.files.url}}" >
-   </video>
+</video>
+
 <p>{{story.body}}</p>
 <p>{{story.user.name}}</p>
 <p>{{story.time}}</p>
+
+<hr>
+<p>likes : {% story_like_count story %}</p>
+<p>comments : {% story_comment_count story %}</p>
+<p>views : {% story_view_count story %}</p>
+<hr>
+
 {% if user == story.user %}
-<a class="btn btn-outline-warning" href="{% url 'story:StoryUpdate' story.id %}">update</a>
-<a class="btn btn-outline-danger" href="{% url 'story:StoryDelete' story.id %}">delete</a>
+    <a class="btn btn-outline-warning" href="{% url 'story:StoryUpdate' story.id %}">update</a>
+    <a class="btn btn-outline-danger" href="{% url 'story:StoryDelete' story.id %}">delete</a>
 {% endif %}
+
+<a class="btn btn-outline-dark" href="{% url 'comments:CommentCreate' pk=story.id obj='obj_story' %}">ComentCreate</a>
+
+
 {% if user in story.likes.all %}
-<a href="{% url 'story:StoryLikes' story.id %}"><img src="../../../media/site/likes.png" style="width: 50px; height: 30px;"></a>
+    <a href="{% url 'story:StoryLikes' story.id %}"><img src="{% static 'img/likes.png' %}" style="width: 50px; height: 30px;"></a>
 {% else %}
-<a href="{% url 'story:StoryLikes' story.id %}"><img src="../../../media/site/unlikes.png" style="width: 50px; height: 30px;"></a>
+    <a href="{% url 'story:StoryLikes' story.id %}"><img src="{% static 'img/unlikes.png' %}" style="width: 50px; height: 30px;"></a>
 {% endif %}
 
 <hr>
 
-{% for coment in coments %}
-<p>{{coment.body}}</p>
-<h4>{{coment.author}}</h4>
-<p>{{coment.date}}</p>
-{% if user == coment.author %}
-<a class="btn btn-outline-warning" href="{% url 'coments:ComentUpdate' coment.id %}">update</a>
-<a class="btn btn-outline-danger" href="{% url 'coments:ComentDelete' coment.id %}">delete</a>
-{% endif %}
-{% if user in coment.likes.all %}
-    <a href="{% url 'coments:ComentLikes' coment.id %}"><img src="../../../media/site/likes.png" style="width: 50px; height: 30px;"></a>
-{% else %}
-   <a href="{% url 'coments:ComentLikes' coment.id %}"><img src="../../../media/site/unlikes.png" style="width: 50px; height: 30px;"></a>
-{% endif %}
+{% for comment in comments %}
 
-{% if user in coment.unlikes.all %}
-    <a href="{% url 'coments:ComentUnLikes' coment.id %}"><img src="../../../media/site/unlike.png" style="width: 50px; height: 30px;"></a>
-{% else %}
-   <a href="{% url 'coments:ComentUnLikes' coment.id %}"><img src="../../../media/site/un-unlike.png" style="width: 50px; height: 30px;"></a>
-{% endif %}
+    <br>
+    <hr>
+
+    {% if comment.reply_to_reply %}
+        <p>reply_to_reply : {{comment.reply_to_reply}}</p>
+    {% elif comment.reply %}
+        <p>reply : {{comment.reply}}</p>
+    {% endif %}
+
+    <p>{{comment.body}}</p>
+    <h4>{{comment.author}}</h4>
+    <p>{{comment.date}}</p>
+
+    {% if user == comment.author %}
+        <a class="btn btn-outline-warning" href="{% url 'comments:CommentUpdate' comment.id %}">update</a>
+        <a class="btn btn-outline-danger" href="{% url 'comments:CommentDelete' comment.id %}">delete</a>
+    {% endif %}
+
+    {% if user in comment.likes.all %}
+        <a href="{% url 'comments:CommentLikes' comment.id %}"><img src="{% static 'img/likes.png' %}" style="width: 50px; height: 30px;"></a>
+    {% else %}
+        <a href="{% url 'comments:CommentLikes' comment.id %}"><img src="{% static 'img/unlikes.png' %}" style="width: 50px; height: 30px;"></a>
+    {% endif %}
+
+    {% if user in comment.un_likes.all %}
+        <a class="btn btn-outline-dark" href="{% url 'comments:CommentUnLikes' comment.id %}"><img src="{% static 'img/unlike.png' %}" style="width: 50px; height: 30px;"></a>
+    {% else %}
+        <a class="btn btn-outline-dark" href="{% url 'comments:CommentUnLikes' comment.id %}"><img src="{% static 'img/un-unlike.png' %}" style="width: 50px; height: 30px;"></a>
+    {% endif %}
+
+    {% if comment.reply%}
+        <a href="{% url 'comments:ReplyToReplyComment' comment.id %}">ReplyToReplyComment</a>
+    {% else %}
+        <a href="{% url 'comments:ReplyComment' comment.id %}">ReplyComment</a>
+    {% endif %}
 
 {% endfor %} 
-<a class="btn btn-outline-secondary" href="{% url 'coments:ComentCreate' blog.id %}">ComentCreate</a>
 
 <script>
     const myModal = document.getElementById('myModal')
@@ -51,4 +84,5 @@
       myInput.focus()
 })
 </script>
+
 {% endblock %}

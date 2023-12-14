@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for video in post %}
+    <img src="{{video.image.url}}">
+    <h3>{{video.title}}</h3>
+    <p>{{video.author}}</p>
+    <p>{{video.date}}</p>
+    <a href="{% url 'video:VideoDetail' video.id %}" class="btn btn-outline-primary">detail</a>
+{% endfor %} 
+
+{% endblock %}

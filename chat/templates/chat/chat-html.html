@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<p>inter yuor message</p>
+<label>message</label>
+<input id="txt" type="text">
+<input id="btn" type="submit" value="send">
+<textarea id="exp" readonly></textarea>
+
+
+
+<script>
+    const socket = new WebSocket("ws://localhost:8000/chat/");
+        
+    socket.onmessage = function(e) {
+        var message = e.data;
+        document.querySelector("#exp").textContent += (message + "\n");
+    };
+
+    socket.onclose = function(e) {
+        console.error("closed");
+    };
+    
+    document.querySelector("#txt").focus();
+    document.querySelector("#txt").onkeyup = function(e) {
+        if (e.keyCode === 13 ){
+            document.querySelector("#btn").click();
+        }
+    };
+
+    document.querySelector("#btn").onclick = function(e) {
+        var textsend = document.querySelector("#txt");
+        var message = textsend.value;
+        socket.send(message);
+        textsend.value = "";
+    };
+
+</script>
+{% endblock %}

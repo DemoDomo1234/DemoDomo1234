@@ -6,19 +6,19 @@ from django.urls import reverse_lazy
 from django.views import View
 from taggit.models import Tag 
 from .mixins import ListMixin, PlayListMixin
-from accounts.mixins import MyLoginRequiredMixin
-from blog.models import Blog
+from accounts.mixins import LoginRequiredMixin
+from video.models import Video
 
 
 
-class ListCreateView(MyLoginRequiredMixin, CreateView):
+class ListCreateView(LoginRequiredMixin, CreateView):
 	model = List
-	fields = ('body', 'titel')
+	fields = ('body', 'title')
 	template_name = "list/ListCreate.html"
 
 	def get_form(self, form_class=None):
 		form = super().get_form(form_class)
-		form['titel'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
+		form['title'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		form['body'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		return form  
 
@@ -29,12 +29,12 @@ class ListCreateView(MyLoginRequiredMixin, CreateView):
 
 class ListUpdateView(ListMixin, UpdateView):
 	model = List
-	fields = ('body', 'titel')
+	fields = ('body', 'title')
 	template_name = "list/ListUpdate.html"
 
 	def get_form(self, form_class=None):
 		form = super().get_form(form_class)
-		form['titel'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
+		form['title'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		form['body'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		return form 
 
@@ -42,17 +42,17 @@ class ListUpdateView(ListMixin, UpdateView):
 class ListDeleteView(ListMixin, DeleteView):
     model = List
     template_name = 'list/ListDelete.html'
-    success_url = reverse_lazy('blog:BlogList')
+    success_url = reverse_lazy('chat:VideoList')
 
 
-class PlayListCreateView(MyLoginRequiredMixin, CreateView):
+class PlayListCreateView(LoginRequiredMixin, CreateView):
 	model = PlayList
-	fields = ('body', 'titel')
-	template_name = "playlst/PlayLitCreate.html"
+	fields = ('body', 'title')
+	template_name = "play_list/PlayListCreate.html"
 
 	def get_form(self, form_class=None):
 		form = super().get_form(form_class)
-		form['titel'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
+		form['title'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		form['body'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		return form 
 
@@ -63,20 +63,20 @@ class PlayListCreateView(MyLoginRequiredMixin, CreateView):
 
 class PlayListUpdateView(PlayListMixin, UpdateView):
 	model = PlayList
-	fields = ('body', 'titel')
-	template_name = "playlst/PlayListUpdate.html"
+	fields = ('body', 'title')
+	template_name = "play_list/PlayListUpdate.html"
 
 	def get_form(self, form_class=None):
 		form = super().get_form(form_class)
-		form['titel'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
+		form['title'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		form['body'].field.widget.attrs.update({'class' : 'btn btn-outline-light'})
 		return form 
 
 
 class PlayListDeleteView(PlayListMixin, DeleteView):
     model = PlayList
-    template_name = 'playlst/PlayListDelete.html'
-    success_url = reverse_lazy('blog:BlogList')
+    template_name = 'play_list/PlayListDelete.html'
+    success_url = reverse_lazy('chat:VideoList')
 
 
 class AddToListView(View):
@@ -84,18 +84,18 @@ class AddToListView(View):
 		user = request.user
 		if user.is_authenticated:
 			lists = List.objects.filter(user=request.user)
-			if request.method == 'POST' :
+			if request.method == 'POST':
 				ids=request.POST.getlist('myid')
-				blog = Blog.objects.get(id=pk)
+				video = Video.objects.get(id=pk)
 				for myid in ids:
-					mylist = List.objects.get(id=myid)
-					if mylist not in blog.lists.all():
-						blog.lists.add(mylist)
+					my_list = List.objects.get(id=myid)
+					if my_list not in video.lists.all():
+						video.lists.add(my_list)
 					else:
-						blog.lists.remove(mylist)
-				return redirect('blog:BlogList')
+						video.lists.remove(my_list)
+				return redirect('chat:VideoList')
 			else :
-				return render(request, 'list/AddToList.html' , {'post':lists})
+				return render(request, 'list/AddToList.html', {'post':lists})
 		else:
 			return redirect('accounts:Login')
 
@@ -105,54 +105,54 @@ class AddToPlayListView(View):
 		user = request.user
 		if user.is_authenticated:
 			playlists = PlayList.objects.filter(user=request.user)
-			blog = Blog.objects.get(id=pk)
-			if user == blog.author :
-				if request.method == 'POST' :
-					if request.user == blog.author:
-						ids=request.POST.getlist('myid')
+			video = Video.objects.get(id=pk)
+			if user == video.author:
+				if request.method == 'POST':
+					if request.user == video.author:
+						ids=request.POST.getlist('id')
 						for myid in ids:
-							myplaylist = PlayList.objects.get(id=myid)
-							if myplaylist not in blog.playlists.all():
-								blog.playlists.add(myplaylist)
+							play_list = PlayList.objects.get(id=myid)
+							if play_list not in video.playlists.all():
+								video.playlists.add(play_list)
 							else:
-								blog.playlists.remove(myplaylist)
-						return redirect('blog:BlogList')
+								video.playlists.remove(play_list)
+						return redirect('chat:VideoList')
 					else:
-						return redirect('blog:BlogList')
+						return redirect('chat:VideoList')
 				else :
-					return render(request, 'playlist/AddToPlayList.html' , {'post':playlists})
+					return render(request, 'play_list/AddToPlayList.html', {'post':playlists})
 			else:
-				return redirect('blog:BlogList')
+				return redirect('chat:VideoList')
 		else:
 			return redirect('accounts:Login')
 
 
-class MyPlayListView(ListView):
-	model = Blog
+class PlayListView(ListView):
+	model = Video
 	context_object_name = 'post'
-	template_name = 'playlist/MyPlayList.html'
+	template_name = 'play_list/PlayList.html'
 
 	def get_queryset(self):
 		my_play_list = PlayList.objects.get(id=self.kwargs['pk'])
 		return my_play_list.play_list.all()
 
 
-class MyListView(ListMixin, ListView):
-	model = Blog
+class ListView(ListMixin, ListView):
+	model = Video
 	context_object_name = 'post'
-	template_name = 'list/MyList.html'
+	template_name = 'list/List.html'
 
 	def get_queryset(self):
 		my_list = List.objects.get(id=self.kwargs['pk'])
-		return my_list.list.all()
+		return Video.objects.filter(lists=my_list)
 
 
 class TagListView(ListView):
-	model = Blog
+	model = Video
 	context_object_name = 'post'
-	template_name = 'blog/TagList.html'
+	template_name = 'video/TagList.html'
 
 	def get_queryset(self):
 		tag = Tag.objects.get(id=self.kwargs['pk'])
-		return tag.tad.all()
+		return Video.objects.filter(tag=tag)
 

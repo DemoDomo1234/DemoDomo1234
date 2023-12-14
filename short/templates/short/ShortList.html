@@ -1,15 +1,20 @@
 {% extends 'base.html' %}
-{% block content %}
-<hr>
 
-  {% for blog in post %}
+{% block content %}
+
+{% for short in post %}
+
   <video controls> 
-    <source src="{{blog.files.url}}" >
-     </video>
-  <p>{{blog.body}}</p>
-  <p>{{blog.user.name}}</p>
-  <p>{{blog.time}}</p>
+    <source src="{{short.files.url}}" >
+  </video>
+
+  <p>{{short.body}}</p>
+  <p>{{short.user.name}}</p>
+  <p>{{short.time}}</p>
+  <a href="{% url 'short:ShortDetail' short.id %}" class="btn btn-outline-light" style="width: 18rem;"><h5>detail</h5></a>
+
 <hr>
 
   {% endfor %}
-    {% endblock %}
+  
+{% endblock %}

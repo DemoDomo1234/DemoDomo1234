@@ -10,11 +10,11 @@ def story_like_count(story):
     return likes['likes__count']
 
 @register.simple_tag()
-def story_coment_count(story):
-    coments = Story.objects.filter(id = story.id).aggregate(Count('coments'))
-    return coments['coments__count']
+def story_comment_count(story):
+    comments = Story.objects.filter(id=story.id).aggregate(Count('comments'))
+    return comments['comments__count']
 
 @register.simple_tag()
 def story_view_count(story):
-    views = Story.objects.filter(id = story.id).aggregate(Count('views'))
+    views = Story.objects.filter(id=story.id).aggregate(Count('views'))
     return views['views__count']

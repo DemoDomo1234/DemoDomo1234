@@ -5,7 +5,7 @@ from .models import Post, Image
 class PostAdmin(admin.ModelAdmin):
     list_display = ("user",)
     list_filter = ("time", "user",)
-    search_fields = ("titel", "user", "body",)
+    search_fields = ("title", "user", "body",)
 
 admin.site.register(Post, PostAdmin)
 

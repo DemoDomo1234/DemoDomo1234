@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.db.models import Count
 from .mixins import ShortMixin
-from accounts.mixins import MyLoginRequiredMixin
+from accounts.mixins import LoginRequiredMixin
 
 
 
@@ -19,27 +19,20 @@ class ShortListView(ListView):
         return self.model.objects.all()
 
 
-class ShortDetailView(MyLoginRequiredMixin, DetailView):
+class ShortDetailView(LoginRequiredMixin, DetailView):
 	model = Short
 	template_name = 'short/ShortDetail.html'
 
 	def get_context_data(self, **kwargs):
-		tag = self.model.tag.values_list('id' , flat = True)
+		tag = self.model.tag.values_list('id', flat=True)
 		context = super().get_context_data(**kwargs)
-		context['blogs'] = self.model.objects.filter(tag__in = tag ).exclude(
+		context['shorts'] = self.model.objects.filter(tag__in=tag).exclude(
 		id = self.kwargs['pk']).annotate(tag_count = Count('tag')).order_by('-tag_count')
-		context['coments'] = self.model.objects.get(id=self.kwargs['pk']).comments.all()
+		context['comments'] = self.model.objects.get(id=self.kwargs['pk']).comments.all()
 		return context
-	
-	def blog_view(self):
-		user = self.request.user
-		if user not in self.model.views.all():
-			self.model.views.add(user)
-		else:
-			self.model.views.remove(user)
 
 
-class ShortCreateView(MyLoginRequiredMixin, CreateView):
+class ShortCreateView(LoginRequiredMixin, CreateView):
 	model = Short
 	fields = ('body', 'files', 'tag')
 	template_name = "short/ShortCreate.html"
@@ -70,7 +63,7 @@ class ShortUpdateView(ShortMixin, UpdateView):
 class ShortDeleteView(ShortMixin, DeleteView):
     model = Short
     template_name = 'short/ShortDelete.html'
-    success_url = reverse_lazy('blog:BlogList')
+    success_url = reverse_lazy('chat:VideoList')
 
 
 class ShortLikesView(View):
@@ -78,8 +71,8 @@ class ShortLikesView(View):
 		user = request.user
 		short = Short.objects.get(id=pk)
 		if user.is_authenticated:
-			if user in short.unlikes.all():
-				short.unlikes.remove(user)
+			if user in short.un_likes.all():
+				short.un_likes.remove(user)
 			if user not in short.likes.all():
 				short.likes.add(user)
 			else:
@@ -88,7 +81,7 @@ class ShortLikesView(View):
 			return redirect('accounts:Login')
 
 
-		return redirect('blog:ShortDetail', short.id)
+		return redirect('short:ShortDetail', short.id)
 
 
 class ShortUnLikesView(View):
@@ -98,11 +91,11 @@ class ShortUnLikesView(View):
 		if user.is_authenticated:
 			if user in short.likes.all():
 				short.likes.remove(user)
-			if user not in short.unlikes.all():
-				short.unlikes.add(user)
+			if user not in short.un_likes.all():
+				short.un_likes.add(user)
 			else:
-				short.unlikes.remove(user)			
+				short.un_likes.remove(user)			
 		else:
 			return redirect('accounts:Login')
 
-		return redirect('blog:ShortDetail', short.id)
+		return redirect('short:ShortDetail', short.id)

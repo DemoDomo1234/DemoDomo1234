@@ -1,49 +1,74 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load accounts_tags %}
+
 {% block content %}
-<img src = "{{user.image.url}}">
+
+<img src = "{{user.image.url}}" style="width: 500px; height: 300px;">
 <h3>{{user.name}}</h3>
 <p>{{user.body}}</p>
 <p>{{user.email}}</p>
 <a class="btn btn-outline-warning" href="{% url 'accounts:EditProfile' user.id %}">EditProfile</a> 
-{% if user in user.folower.all %}
-<a class="nav-item btn btn-outline-dark" href="{% url 'accounts:Folow' user.id %}">UnFolow</a>
+
+{% if user in user.follower.all %}
+    <a class="nav-item btn btn-outline-dark" href="{% url 'accounts:Follow' user.id %}">UnFollow</a>
 {% else %}
-<a class="nav-item btn btn-outline-danger" href="{% url 'accounts:Folow' user.id %}">Folow</a>
+    <a class="nav-item btn btn-outline-danger" href="{% url 'accounts:Follow' user.id %}">Follow</a>
 {% endif %}
+
 {% if user in user.notifications.all %}
-<a href="{% url 'accounts:Noty' user.id %}"><img src="../../../media/site/noty.png" style="width: 50px; height: 30px;"></a>
+    <a href="{% url 'accounts:Notification' user.id %}"><img src="{% static 'img/noty.png' %}" style="width: 50px; height: 30px;"></a>
 {% else %}
-<a href="{% url 'accounts:Noty' user.id %}"><img src="../../../media/site/un-noty.png" style="width: 50px; height: 30px;"></a>
+    <a href="{% url 'accounts:Notification' user.id %}"><img src="{% static 'img/un-noty.png' %}" style="width: 50px; height: 30px;"></a>
 {% endif %}
-<a class="nav-item btn btn-outline-danger" href="{% url 'accounts:ChangePassowrd' user.id %}">ChangePassowrd</a> 
+
+<a class="nav-item btn btn-outline-danger" href="{% url 'accounts:ChangePassword' user.id %}">ChangePassword</a> 
+
 <hr>
-<h4>folowers</h4>
-{% for folow in following %}
-<p>{{folow.name}}</p>
+<br>
+
+<h4>folowers : {% follower_count user %}</h4>
+{% for follow in following %}
+    <p>{{follow.name}}</p>
 {% endfor %}
+
+<br>
+<hr>
+
+<a class="btn btn-outline-dark" href="{% url 'video:SavedList' %}">saved</a> 
+<a class="btn btn-outline-dark" href="{% url 'accounts:UserVideoList' %}">videos</a> 
+
+<hr>
+<br>
+
+<a href="{% url 'list:ListCreate' %}" class="btn btn-outline-primary">ListCreate</a>
+<a href="{% url 'list:PlayListCreate' %}" class="btn btn-outline-primary">PlayListCreate</a>
+
 <h4>lists</h4>
 <hr>
-    {% for blog in lists %}
-          <h5>{{blog.titel}}</h5>
-          <p>{{blog.body}}</p>
-          {% if user == blog.user %}
-          <a class="btn btn-outline-warning" href="{% url 'list:ListUpdate' blog.id %}">update</a>
-          <a class="btn btn-outline-danger" href="{% url 'list:ListDelete' blog.id %}">delete</a>
-          <a href="{% url 'list:MyList' blog.id %}" class="btn btn-outline-primary">detail</a>
-          {% endif %}
-          <hr>
-      {% endfor %}
+    {% for list in lists %}
+        <h5>{{list.title}}</h5>
+        <p>{{list.body}}</p>
+        {% if user == list.user %}
+          <a class="btn btn-outline-warning" href="{% url 'list:ListUpdate' list.id %}">update</a>
+          <a class="btn btn-outline-danger" href="{% url 'list:ListDelete' list.id %}">delete</a>
+          <a href="{% url 'list:List' list.id %}" class="btn btn-outline-primary">detail</a>
+        {% endif %}
+        <hr>
+    {% endfor %}
+
 <h4>playlists</h4>
 <hr>
-{% for blog in palylists%}
-<h5>{{blog.titel}}</h5>
-<p>{{blog.body}}</p>
-{% if user == blog.user %}
-<a class="btn btn-outline-warning" href="{% url 'list:PlayListUpdate' blog.id %}">update</a>
-<a class="btn btn-outline-danger" href="{% url 'list:PlayListDelete'  blog.id %}">delete</a>
-<a href="{% url 'list:MyPlayList' blog.id %}" class="btn btn-outline-primary">detail</a>
 
-{% endif %}
-<hr>
-{% endfor %}
+{% for palylist in paly_lists%}
+    <h5>{{palylist.title}}</h5>
+    <p>{{palylist.body}}</p>
+    {% if user == palylist.user %}
+        <a class="btn btn-outline-warning" href="{% url 'list:PlayListUpdate' palylist.id %}">update</a>
+        <a class="btn btn-outline-danger" href="{% url 'list:PlayListDelete'  palylist.id %}">delete</a>
+        <a href="{% url 'list:PlayList' palylist.id %}" class="btn btn-outline-primary">detail</a>
+    {% endif %}
+
+    <hr>
+    {% endfor %}
 {% endblock %}

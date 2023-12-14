@@ -12,15 +12,15 @@ def post_like_count(post):
 
 @register.simple_tag()
 def post_unlike_count(post):
-    unlikes = Post.objects.filter(id=post.id).aggregate(Count('unlikes'))
-    return unlikes['unlikes__count']
+    un_likes = Post.objects.filter(id=post.id).aggregate(Count('un_likes'))
+    return un_likes['un_likes__count']
 
 @register.simple_tag()
-def post_coment_count(post):
-    coments = Post.objects.filter(id = post.id).aggregate(Count('coments'))
-    return coments['coments__count']
+def post_comment_count(post):
+    comments = Post.objects.filter(id=post.id).aggregate(Count('comments'))
+    return comments['comments__count']
 
 @register.simple_tag()
 def post_view_count(post):
-    views = Post.objects.filter(id = post.id).aggregate(Count('views'))
+    views = Post.objects.filter(id=post.id).aggregate(Count('views'))
     return views['views__count']

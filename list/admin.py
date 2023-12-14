@@ -5,7 +5,7 @@ from .models import List, PlayList
 class ListAdmin(admin.ModelAdmin):
     list_display = ("user",)
     list_filter = ("time", "user",)
-    search_fields = ("titel", "user", "body",)
+    search_fields = ("title", "user", "body",)
 
 admin.site.register(List, ListAdmin)
 
@@ -13,6 +13,6 @@ admin.site.register(List, ListAdmin)
 class PlayListAdmin(admin.ModelAdmin):
     list_display = ("user",)
     list_filter = ("time", "user",)
-    search_fields = ("titel", "user", "body",)
+    search_fields = ("title", "user", "body",)
 
 admin.site.register(PlayList, PlayListAdmin)
