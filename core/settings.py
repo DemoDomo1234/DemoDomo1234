@@ -1,12 +1,11 @@
 from pathlib import Path
 import os
-from neomodel import config, db
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-u$bb^gu-q-l7wiw_o7t-b5b)m9i$3=*_2*(rq5ilpfc8cqkj9s'
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = os.environ.get('DEBUG', False)
+ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS', '*')]
 
 
 INSTALLED_APPS = [
@@ -27,14 +26,12 @@ INSTALLED_APPS = [
     'story.apps.StoryConfig',
     'short.apps.ShortConfig',
     'post.apps.PostConfig',
-    'chat.apps.ChatConfig',
     
     # external apps
     'taggit',
     'django_social_share',
     'django_neomodel',
     'django_celery_beat',
-    'channels',
     'django_elasticsearch_dsl'
 ]
 
@@ -76,11 +73,11 @@ ASGI_APPLICATION = 'core.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'youtubesql',
-        'USER': 'postgres',
-        'PASSWORD': 'demodomo',
-        'HOST': 'localhost',
-        'PORT': 5432 
+        'NAME': os.environ.get('DATABASE_NAME', 'postgres'),
+        'USER': os.environ.get('DATABASE_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('DATABASE_HOST', 'db'),
+        'PORT': os.environ.get('DATABASE_PORT', 5432), 
     }
     }
 
@@ -88,22 +85,12 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
     }
 }
-
-
-# CHANNEL_LAYERS = {
-#     'default' : {
-#         'BACKEND' : 'channels_redis.core.RedisChannelLayer',
-#         'CONFIG': {
-#             'hosts':[('127.0.0.1', 6739)]
-#         }
-#     }
-# }
 
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
@@ -135,13 +122,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 if DEBUG:
     STATICFILES_DIRS = [
-            os.path.join(BASE_DIR, 'static')
+            BASE_DIR / "static"
        ]
 else:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    STATIC_ROOT = BASE_DIR / "static"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -163,17 +150,15 @@ INTERNAL_IPS = [
 ]
 
 
-NEOMODEL_NEO4J_BOLT_URL = 'bolt://neo4j:demodomo@localhost:7687'
+NEOMODEL_NEO4J_BOLT_URL = os.environ.get('NEO4J_BOLT_URL', 'bolt://neo4j:Abcd1234@neo4j_db:7687')
 NEOMODEL_SIGNALS = True
 NEOMODEL_FORCE_TIMEZONE = False
 NEOMODEL_MAX_CONNECTION_POOL_SIZE = 50
-config.DATABASE_URL = 'bolt://neo4j:demodomo@localhost:7687'
-db.set_connection('bolt://neo4j:demodomo@localhost:7687')
 
 
 ELASTICSEARCH_DSL={
     'default': {
-        'hosts': 'localhost:9200'
+        'hosts': os.getenv("ELASTICSEARCH_DSL_HOSTS", 'localhost:9200')
     },
 }
 

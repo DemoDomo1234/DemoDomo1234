@@ -1,8 +1,13 @@
-FROM python:3.10
+FROM python:3.8-slim-buster
+
 WORKDIR /usr/src/core
-COPY requirvment.txt /usr/src/core
-RUN pip install -U pip
-RUN pip install -r requirvment.txt
-COPY . /usr/src/core
-EXPOSE 8000
-CMD ["gunicorn", "core.wsgi", ":8000"]
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && apt-get install -y build-essential libpq-dev
+RUN rm -rf /var/lib/apt/lists/*
+
+COPY . .
+
+RUN pip install --upgrade pip && pip install -r requirements.txt

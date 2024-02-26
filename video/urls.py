@@ -11,6 +11,7 @@ app_name = 'video'
 
 
 urlpatterns = [
+    path('', views.VideoListView.as_view(), name="VideoList"),
     path('create', views.VideoCreateView.as_view(), name='VideoCreate'),
     path('update/<pk>', views.VideoUpdateView.as_view(), name='VideoUpdate'),
     path('delete/<pk>', views.VideoDeleteView.as_view(), name='VideoDelete'),

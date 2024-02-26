@@ -4,6 +4,8 @@
 
 ### My ignores ###
 media
+redis.conf
+elasticsearch
 .venv
 venv
 .env
