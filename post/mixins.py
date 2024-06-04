@@ -11,7 +11,7 @@ class PostMixin():
             if user == post.user:
                 return super().dispatch(request, *args, **kwargs)
             else:
-                return redirect('chat:VideoList')
+                return redirect('video:VideoList')
         else:
             return redirect('accounts:Login')
 
@@ -24,6 +24,6 @@ class ImageMixin():
             if user == image.user:
                 return super().dispatch(request, *args, **kwargs)
             else:
-                return redirect('chat:VideoList')
+                return redirect('video:VideoList')
         else:
             return redirect('accounts:Login')

@@ -61,7 +61,7 @@ class StoryUpdateView(StoryMixin, UpdateView):
 class StoryDeleteView(StoryMixin, DeleteView):
     model = Story
     template_name = 'story/StoryDelete.html'
-    success_url = reverse_lazy('chat:VideoList')
+    success_url = reverse_lazy('video:VideoList')
 
 
 class StoryLikesView(View):

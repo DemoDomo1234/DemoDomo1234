@@ -16,7 +16,7 @@ class EditProfileView(UserMixin, UpdateView):
 	model = User
 	template_name = "accounts/EditProfile.html"
 	fields = ('body', 'email', 'image', 'name')
-	success_url = reverse_lazy("chat:VideoList")
+	success_url = reverse_lazy("video:VideoList")
 
 	def get_form(self, form_class=None):
 		form = super().get_form(form_class)
@@ -101,7 +101,7 @@ class CheckCodeView(View):
 class UserLoginView(LoginView):
 	model = User
 	template_name = "accounts/Login.html"
-	success_url = reverse_lazy("chat:VideoList")
+	success_url = reverse_lazy("video:VideoList")
 
 	def get_form(self, form_class=None):
 		form = super().get_form(form_class)
@@ -156,7 +156,7 @@ class NotificationView(View):
 class UserLogoutView(View):
 	def dispatch(self, request, *args, **kwargs):
 		logout(self.request)
-		return redirect('chat:VideoList')
+		return redirect('video:VideoList')
 
 
 class ChangePasswordView(View):
@@ -184,6 +184,6 @@ class ChangePasswordView(View):
 				else:
 					return render(request, 'accounts/ChangePassword.html')
 			else:
-				return redirect('chat:VideoList')
+				return redirect('video:VideoList')
 		else:
 			return redirect('accounts:Login')

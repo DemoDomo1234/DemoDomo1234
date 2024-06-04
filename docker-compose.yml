@@ -71,7 +71,7 @@ services:
       - neo4j_db
       - elasticsearch
 
-    command: sh -c "python manage.py migrate && python manage.py install_labels && gunicorn core.wsgi:application --bind 0.0.0.0:8000"
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py install_labels && gunicorn core.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/usr/src/core
       - static:/usr/src/core/static

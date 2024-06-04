@@ -3,8 +3,9 @@
 {% load accounts_tags %}
 
 {% block content %}
-
+{% if user.image %}
 <img src = "{{user.image.url}}" style="width: 500px; height: 300px;">
+{% endif %}
 <h3>{{user.name}}</h3>
 <p>{{user.body}}</p>
 <p>{{user.email}}</p>

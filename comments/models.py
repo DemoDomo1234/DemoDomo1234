@@ -27,4 +27,4 @@ class Comments(models.Model):
         return self.body[:10]
 
     def get_absolute_url(self):
-        return reverse("chat:VideoList")
+        return reverse("video:VideoList")

@@ -30,5 +30,5 @@ class Image(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
-        return reverse("chat:VideoList")
+        return reverse("video:VideoList")
         

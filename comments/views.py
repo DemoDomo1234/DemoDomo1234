@@ -88,7 +88,7 @@ class CommentUpdateView(CommentMixin, UpdateView):
 
 class CommentDeleteView(CommentMixin, DeleteView):
 	model = Comments
-	success_url = reverse_lazy("chat:VideoList")
+	success_url = reverse_lazy("video:VideoList")
 	template_name = "comments/CommentDelete.html"
 
 
@@ -107,7 +107,7 @@ class CommentLikesView(View):
 			return redirect('accounts:Login')
 
 
-		return redirect('chat:VideoList')
+		return redirect('video:VideoList')
 
 
 class CommentUnLikesView(View):
@@ -124,5 +124,5 @@ class CommentUnLikesView(View):
 		else:
 			return redirect('accounts:Login')
 
-		return redirect('chat:VideoList')
+		return redirect('video:VideoList')
 

@@ -74,7 +74,7 @@ class VideoUpdateView(VideoMixin, UpdateView):
 class VideoDeleteView(VideoMixin, DeleteView):
 	login_url = '/login/'
 	model = Video
-	success_url = reverse_lazy("chat:VideoList")
+	success_url = reverse_lazy("video:VideoList")
 	template_name = "video/VideoDelete.html"
 
 

@@ -10,6 +10,6 @@ class VideoMixin():
             if user == video.author:
                 return super().dispatch(request, *args, **kwargs)
             else:
-                return redirect('chat:VideoList')
+                return redirect('video:VideoList')
         else:
             return redirect('accounts:Login')

@@ -63,7 +63,7 @@ class ShortUpdateView(ShortMixin, UpdateView):
 class ShortDeleteView(ShortMixin, DeleteView):
     model = Short
     template_name = 'short/ShortDelete.html'
-    success_url = reverse_lazy('chat:VideoList')
+    success_url = reverse_lazy('video:VideoList')
 
 
 class ShortLikesView(View):

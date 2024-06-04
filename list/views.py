@@ -42,7 +42,7 @@ class ListUpdateView(ListMixin, UpdateView):
 class ListDeleteView(ListMixin, DeleteView):
     model = List
     template_name = 'list/ListDelete.html'
-    success_url = reverse_lazy('chat:VideoList')
+    success_url = reverse_lazy('video:VideoList')
 
 
 class PlayListCreateView(LoginRequiredMixin, CreateView):
@@ -76,7 +76,7 @@ class PlayListUpdateView(PlayListMixin, UpdateView):
 class PlayListDeleteView(PlayListMixin, DeleteView):
     model = PlayList
     template_name = 'play_list/PlayListDelete.html'
-    success_url = reverse_lazy('chat:VideoList')
+    success_url = reverse_lazy('video:VideoList')
 
 
 class AddToListView(View):
@@ -93,7 +93,7 @@ class AddToListView(View):
 						video.lists.add(my_list)
 					else:
 						video.lists.remove(my_list)
-				return redirect('chat:VideoList')
+				return redirect('video:VideoList')
 			else :
 				return render(request, 'list/AddToList.html', {'post':lists})
 		else:
@@ -116,13 +116,13 @@ class AddToPlayListView(View):
 								video.playlists.add(play_list)
 							else:
 								video.playlists.remove(play_list)
-						return redirect('chat:VideoList')
+						return redirect('video:VideoList')
 					else:
-						return redirect('chat:VideoList')
+						return redirect('video:VideoList')
 				else :
 					return render(request, 'play_list/AddToPlayList.html', {'post':playlists})
 			else:
-				return redirect('chat:VideoList')
+				return redirect('video:VideoList')
 		else:
 			return redirect('accounts:Login')
 

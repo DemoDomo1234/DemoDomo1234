@@ -11,7 +11,7 @@ class StoryMixin():
             if user == story.user:
                 return super().dispatch(request, *args, **kwargs)
             else:
-                return redirect('chat:VideoList')
+                return redirect('video:VideoList')
         else:
             return redirect('accounts:Login')
     

@@ -14,7 +14,7 @@ class List(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("chat:VideoList")
+        return reverse("video:VideoList")
 
 
 class PlayList(models.Model):
@@ -28,4 +28,4 @@ class PlayList(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("chat:VideoList")
+        return reverse("video:VideoList")

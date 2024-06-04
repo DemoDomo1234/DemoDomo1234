@@ -10,7 +10,7 @@ class UserMixin():
             if request_user.id == user.id :
                 return super().dispatch(request, *args, **kwargs)
             else:
-                return redirect('chat:VideoList')
+                return redirect('video:VideoList')
         else:
             return redirect('accounts:Login')
 

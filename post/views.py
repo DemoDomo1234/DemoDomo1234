@@ -57,7 +57,7 @@ class PostUpdateView(PostMixin, UpdateView):
 class PostDeleteView(PostMixin, DeleteView):
     model = Post
     template_name = 'post/PostDelete.html'
-    success_url = reverse_lazy('chat:VideoList')
+    success_url = reverse_lazy('video:VideoList')
 
 
 class PostLikesView(View):
@@ -115,4 +115,4 @@ class ImageUpdateView(ImageMixin, UpdateView):
 class ImageDeleteView(ImageMixin, DeleteView):
     model = Image
     template_name = 'image/ImageDelete.html'
-    success_url = reverse_lazy('chat:VideoList')
+    success_url = reverse_lazy('video:VideoList')

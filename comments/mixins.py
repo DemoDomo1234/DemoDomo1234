@@ -10,6 +10,6 @@ class CommentMixin():
             if user == comment.author:
                 return super().dispatch(request, *args, **kwargs)
             else:
-                return redirect('chat:VideoList')
+                return redirect('video:VideoList')
         else:
             return redirect('accounts:Login')
