@@ -44,6 +44,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'video.middlewares.VideoViewMiddleware',
+    'post.middlewares.PostViewMiddleware',
+    'short.middlewares.ShortViewMiddleware',
+    'story.middlewares.StoryViewMiddleware',
+
 ]
 
 
